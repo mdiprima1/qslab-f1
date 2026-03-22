@@ -1,0 +1,32 @@
+# Generated output — never commit
+**/output/
+*.pdf
+*.png
+
+# Exception: keep the logo
+!assets/qsl_logo.png
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+
+# Environment
+.env
+*.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Claude Code
+.claude/
