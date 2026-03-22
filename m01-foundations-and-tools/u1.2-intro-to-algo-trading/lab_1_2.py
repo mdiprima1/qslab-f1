@@ -303,8 +303,10 @@ def step7_generate_pdf(stats, chart_price_ma, chart_regime):
 
     story.append(Paragraph("Key Statistics", h2))
     story.append(HRFlowable(width="100%", thickness=0.5, color=GOLD_RL, spaceAfter=8))
-    rows = [
-        [Paragraph("<b>Metric</b>", meta), Paragraph("<b>Value</b>", meta)],
+    header_style = ParagraphStyle("th", parent=styles["Normal"], fontSize=9,
+                                    fontName="Helvetica-Bold",
+                                    textColor=colors.white, leading=13)
+    data_rows = [
         ["Total trading days", str(stats["total_trading_days"])],
         ["Days in market (+1)", f"{stats['days_in_market']} ({stats['pct_time_in_market']}%)"],
         ["Days in cash (0)", f"{stats['days_in_cash']} ({round(100 - stats['pct_time_in_market'], 1)}%)"],
@@ -315,12 +317,9 @@ def step7_generate_pdf(stats, chart_price_ma, chart_regime):
         ["Latest close vs SMA spread", f"${stats['price_vs_sma_spread']} ({stats['price_vs_sma_pct']}%)"],
         ["Current signal", stats["current_signal_label"]],
     ]
-    sd = []
-    for i, r in enumerate(rows):
-        if i == 0:
-            sd.append([Paragraph(str(r[0]), meta), Paragraph(str(r[1]), meta)])
-        else:
-            sd.append([Paragraph(str(r[0]), body), Paragraph(str(r[1]), body)])
+    sd = [[Paragraph("Metric", header_style), Paragraph("Value", header_style)]]
+    for r in data_rows:
+        sd.append([Paragraph(r[0], body), Paragraph(r[1], body)])
     st2 = Table(sd, colWidths=[WIDTH * 0.65, WIDTH * 0.35])
     ss = [
         ("BACKGROUND", (0, 0), (-1, 0), NAVY_RL),
