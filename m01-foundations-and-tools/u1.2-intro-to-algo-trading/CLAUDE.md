@@ -62,7 +62,7 @@ Never commit output/.
 
 ## ACTIVATION SEQUENCE
 
-When student says "Start QSLab unit 1.2", run lab_1_2.py step by step.
+When student says "Start QSLab F1-1.2", run lab_1_2.py step by step.
 Pause after each step. Explain before moving on.
 
   Step 1 — Download data, show dataframe, explain columns

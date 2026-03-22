@@ -12,8 +12,8 @@ Read these three files before doing anything:
 
 After reading all three, say exactly:
 
-"QSLab Unit 1.2 is ready. This lab walks through the AAPL 100-day moving average
+"QSLab F1-1.2 is ready. This lab walks through the AAPL 100-day moving average
 strategy from your course using real market data. When you are ready to begin,
-say: Start QSLab unit 1.2"
+say: Start QSLab F1-1.2"
 
-Wait for the student. Do not start any analysis until they say "Start QSLab unit 1.2".
+Wait for the student. Do not start any analysis until they say "Start QSLab F1-1.2".
