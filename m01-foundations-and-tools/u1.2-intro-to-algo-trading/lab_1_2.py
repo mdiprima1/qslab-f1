@@ -44,6 +44,29 @@ def step1_download_data():
     df.columns = ["Close"]
     df = df.dropna()
     df["Close"] = df["Close"].round(2)
+
+    print()
+    print("=" * 55)
+    print("  STEP 1 — AAPL Data Downloaded")
+    print("=" * 55)
+    print(f"  Ticker:        {TICKER}")
+    print(f"  Trading days:  {len(df):,}")
+    print(f"  From:          {df.index[0].strftime('%B %d, %Y')}")
+    print(f"  To:            {df.index[-1].strftime('%B %d, %Y')}")
+    print(f"  Start price:   ${df['Close'].iloc[0]:.2f}")
+    print(f"  End price:     ${df['Close'].iloc[-1]:.2f}")
+    print()
+    print("  First 5 rows:")
+    print("  " + "-" * 30)
+    for date, row in df.head(5).iterrows():
+        print(f"  {date.strftime('%Y-%m-%d')}   ${row['Close']:.2f}")
+    print()
+    print("  Last 5 rows:")
+    print("  " + "-" * 30)
+    for date, row in df.tail(5).iterrows():
+        print(f"  {date.strftime('%Y-%m-%d')}   ${row['Close']:.2f}")
+    print("=" * 55)
+    print()
     return df
 
 
@@ -52,6 +75,24 @@ def step2_calculate_sma(df):
     df = df.copy()
     df["SMA_100"] = df["Close"].rolling(window=MA_PERIOD).mean().round(2)
     df = df.dropna()
+
+    print()
+    print("=" * 55)
+    print("  STEP 2 — 100-Day SMA Calculated")
+    print("=" * 55)
+    print(f"  MA period:     {MA_PERIOD} trading days")
+    print(f"  Rows after:    {len(df):,} (first 99 rows dropped)")
+    print()
+    print("  Latest 5 rows — Close + SMA_100:")
+    print("  " + "-" * 44)
+    print(f"  {'Date':<14} {'Close':>10} {'SMA_100':>10}")
+    print("  " + "-" * 44)
+    for date, row in df.tail(5).iterrows():
+        diff = row['Close'] - row['SMA_100']
+        flag = " (above)" if diff > 0 else " (below)"
+        print(f"  {date.strftime('%Y-%m-%d'):<14} ${row['Close']:>8.2f} ${row['SMA_100']:>8.2f}{flag}")
+    print("=" * 55)
+    print()
     return df
 
 
@@ -86,6 +127,34 @@ def step4_generate_signals(df):
     """Apply SMA crossover rule: signal=1 (buy) when Close > SMA, else 0 (cash)."""
     df = df.copy()
     df["Signal"] = (df["Close"] > df["SMA_100"]).astype(int)
+
+    buy_days = int(df["Signal"].sum())
+    cash_days = len(df) - buy_days
+    current = int(df["Signal"].iloc[-1])
+    print()
+    print("=" * 55)
+    print("  STEP 4 — Strategy Rule")
+    print("=" * 55)
+    print("  Rule:")
+    print("    Close > SMA_100  →  Signal +1  (own AAPL)")
+    print("    Close <= SMA_100 →  Signal  0  (hold cash)")
+    print()
+    print(f"  Days with signal +1 (in market): {buy_days:,}")
+    print(f"  Days with signal  0 (in cash):   {cash_days:,}")
+    print(f"  Time in market: {buy_days/len(df)*100:.1f}%")
+    print()
+    label = "Signal +1 — Own AAPL" if current == 1 else "Signal 0 — Hold cash"
+    print(f"  Current signal:  {label}")
+    print()
+    print("  Last 5 rows — Close, SMA, Signal:")
+    print("  " + "-" * 50)
+    print(f"  {'Date':<14} {'Close':>9} {'SMA_100':>9} {'Signal':>8}")
+    print("  " + "-" * 50)
+    for date, row in df.tail(5).iterrows():
+        sig_label = "+1 buy" if row['Signal'] == 1 else " 0 cash"
+        print(f"  {date.strftime('%Y-%m-%d'):<14} ${row['Close']:>7.2f} ${row['SMA_100']:>7.2f} {sig_label:>8}")
+    print("=" * 55)
+    print()
     return df
 
 
@@ -130,6 +199,34 @@ def step5_plot_regime(df):
     plt.savefig(path, dpi=150, bbox_inches="tight")
     plt.close()
     return path
+
+
+def step6_print_stats(stats):
+    """Print the stats table directly to the conversation window."""
+    print()
+    print("=" * 55)
+    print("  STEP 6 — Key Statistics")
+    print("=" * 55)
+    print(f"  Asset:              {stats['ticker']}")
+    print(f"  MA period:          {stats['ma_period']} days")
+    print(f"  Data range:         {stats['data_start']} to {stats['data_end']}")
+    print()
+    print(f"  Total trading days: {stats['total_trading_days']:,}")
+    print(f"  Days in market:     {stats['days_in_market']:,} ({stats['pct_time_in_market']}%)")
+    print(f"  Days in cash:       {stats['days_in_cash']:,} ({round(100 - stats['pct_time_in_market'], 1)}%)")
+    print(f"  Regime changes:     {stats['regime_changes']}")
+    print()
+    print(f"  AAPL start price:   ${stats['start_price']}")
+    print(f"  AAPL end price:     ${stats['end_price']}")
+    print(f"  Buy-and-hold rtn:   {stats['buy_and_hold_return_pct']}%")
+    print()
+    print(f"  Latest close:       ${stats['latest_close']}")
+    print(f"  Latest SMA-100:     ${stats['latest_sma_100']}")
+    print(f"  Spread:             ${stats['price_vs_sma_spread']} ({stats['price_vs_sma_pct']}%)")
+    print()
+    print(f"  Current signal:     {stats['current_signal_label']}")
+    print("=" * 55)
+    print()
 
 
 def step6_compute_stats(df):

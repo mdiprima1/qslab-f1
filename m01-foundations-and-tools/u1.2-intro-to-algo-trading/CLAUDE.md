@@ -65,19 +65,37 @@ Never commit output/.
 When student says "Start QSLab F1-1.2", run lab_1_2.py step by step.
 Pause after each step. Explain before moving on.
 
-  Step 1 — Download data, show dataframe, explain columns
-  Step 2 — Calculate SMA-100, show amended dataframe, explain
-  Step 3 — Plot price and SMA, explain what to look for
-  Step 4 — Explain the strategy rule in plain English
-  Step 5 — Generate signals, plot regime chart, explain zones
-  Step 6 — Compute stats, display, explain each number
-  Step 7 — Generate PDF report. After generating, open it automatically
-            using the system default PDF viewer (run: open output/lab_1_2_report.pdf
-            on Mac, or start output/lab_1_2_report.pdf on Windows).
-            Then tell the student in plain language:
-            "Your report is ready and open on your screen. It is saved at:
-            [show the full readable path, not a code block]
-            You can also find it in Finder by searching for lab_1_2_report.pdf"
+  Step 1 — Call step1_download_data(). The function prints the data summary
+            and first/last 5 rows directly in the conversation window.
+            Read the output and explain the columns to the student.
+
+  Step 2 — Call step2_calculate_sma(df). The function prints the updated table
+            with the SMA_100 column visible. Explain what the SMA_100 values
+            show and why the first 99 rows were dropped.
+
+  Step 3 — Call step3_plot_price_ma(df). Then display the saved chart
+            output/chart_price_ma.png inline in the conversation so the
+            student sees it without opening any folder.
+            Explain the blue and orange lines.
+
+  Step 4 — Call step4_generate_signals(df). The function prints the signal
+            table and summary directly in the conversation.
+            Explain the buy/cash rule using the printed numbers.
+
+  Step 5 — Call step5_plot_regime(df). Display output/chart_regime.png
+            inline in the conversation.
+            Explain the green zones (own AAPL) and gray zones (cash).
+
+  Step 6 — Call step6_compute_stats(df) to get the stats dict.
+            Then call step6_print_stats(stats) to print the full
+            statistics table directly in the conversation window.
+            Explain each number in plain language after the table appears.
+
+  Step 7 — Call step7_generate_pdf(stats, chart_price_ma, chart_regime).
+            After generating, open the PDF automatically with the system
+            viewer (open command on Mac, start on Windows).
+            Tell the student the file is open on their screen and
+            show the full plain-language path without a code block.
 
 If student says "continue" or "next", proceed to the next step.
 
