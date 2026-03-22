@@ -62,40 +62,47 @@ Never commit output/.
 
 ## ACTIVATION SEQUENCE
 
-When student says "Start QSLab F1-1.2", run lab_1_2.py step by step.
-Pause after each step. Explain before moving on.
+When student says "Start QSLab F1-1.2", execute the steps below.
+After EVERY step you MUST paste the full terminal output into the
+conversation window as plain text — not hidden in a toggle.
+The student must see every table and number directly in the chat.
 
-  Step 1 — Call step1_download_data(). The function prints the data summary
-            and first/last 5 rows directly in the conversation window.
-            Read the output and explain the columns to the student.
+  Step 1 — Run step1_download_data() in lab_1_2.py.
+            Paste the COMPLETE printed output into the conversation.
+            Then add one short paragraph explaining what the student
+            is looking at: what the Date and Close columns mean,
+            and what the date range tells them.
 
-  Step 2 — Call step2_calculate_sma(df). The function prints the updated table
-            with the SMA_100 column visible. Explain what the SMA_100 values
-            show and why the first 99 rows were dropped.
+  Step 2 — Run step2_calculate_sma(df).
+            Paste the COMPLETE printed output into the conversation.
+            Explain why the SMA_100 moves slowly compared to Close,
+            and what above/below means for the strategy.
 
-  Step 3 — Call step3_plot_price_ma(df). Then display the saved chart
-            output/chart_price_ma.png inline in the conversation so the
-            student sees it without opening any folder.
-            Explain the blue and orange lines.
+  Step 3 — Run step3_plot_price_ma(df).
+            Display the image output/chart_price_ma.png
+            INLINE in the conversation using the Read tool.
+            The student must see the chart in the chat window —
+            not in a folder, not in a toggle.
+            Explain the two lines after the image appears.
 
-  Step 4 — Call step4_generate_signals(df). The function prints the signal
-            table and summary directly in the conversation.
-            Explain the buy/cash rule using the printed numbers.
+  Step 4 — Run step4_generate_signals(df).
+            Paste the COMPLETE printed output into the conversation.
+            Explain the buy/cash rule using the exact numbers shown.
 
-  Step 5 — Call step5_plot_regime(df). Display output/chart_regime.png
-            inline in the conversation.
-            Explain the green zones (own AAPL) and gray zones (cash).
+  Step 5 — Run step5_plot_regime(df).
+            Display output/chart_regime.png INLINE in the conversation.
+            Explain the green zones and gray zones after the image.
 
-  Step 6 — Call step6_compute_stats(df) to get the stats dict.
-            Then call step6_print_stats(stats) to print the full
-            statistics table directly in the conversation window.
-            Explain each number in plain language after the table appears.
+  Step 6 — Run step6_compute_stats(df).
+            Paste the COMPLETE printed stats output into the conversation.
+            Then walk through each number in plain language —
+            what it means in dollars or days, not just what it is.
 
-  Step 7 — Call step7_generate_pdf(stats, chart_price_ma, chart_regime).
-            After generating, open the PDF automatically with the system
-            viewer (open command on Mac, start on Windows).
-            Tell the student the file is open on their screen and
-            show the full plain-language path without a code block.
+  Step 7 — Run step7_generate_pdf(stats, chart_price_ma, chart_regime).
+            Open the PDF with: open [pdf_path] (Mac) or start [pdf_path] (Windows).
+            Then tell the student:
+            "Your report is open on your screen. You can also find it at:
+            [show path in plain text, e.g.: Your Documents > qslab-f1 > m01... > output]"
 
 If student says "continue" or "next", proceed to the next step.
 
