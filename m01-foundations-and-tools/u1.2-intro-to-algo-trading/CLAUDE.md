@@ -71,7 +71,13 @@ Pause after each step. Explain before moving on.
   Step 4 — Explain the strategy rule in plain English
   Step 5 — Generate signals, plot regime chart, explain zones
   Step 6 — Compute stats, display, explain each number
-  Step 7 — Generate PDF report, confirm saved to output/
+  Step 7 — Generate PDF report. After generating, open it automatically
+            using the system default PDF viewer (run: open output/lab_1_2_report.pdf
+            on Mac, or start output/lab_1_2_report.pdf on Windows).
+            Then tell the student in plain language:
+            "Your report is ready and open on your screen. It is saved at:
+            [show the full readable path, not a code block]
+            You can also find it in Finder by searching for lab_1_2_report.pdf"
 
 If student says "continue" or "next", proceed to the next step.
 
