@@ -98,28 +98,40 @@ def step2_calculate_sma(df):
 
 def step3_plot_price_ma(df):
     """Plot AAPL close price and 100-day SMA. Saves to output/chart_price_ma.png."""
-    fig, ax = plt.subplots(figsize=(12, 5))
+    fig, ax = plt.subplots(figsize=(16, 7))
     fig.patch.set_facecolor("white")
-    ax.plot(df.index, df["Close"], color=BLUE_PRICE, linewidth=1.0,
+    ax.plot(df.index, df["Close"], color=BLUE_PRICE, linewidth=1.2,
             label="AAPL Close Price", alpha=0.9)
-    ax.plot(df.index, df["SMA_100"], color=ORANGE_MA, linewidth=1.8,
+    ax.plot(df.index, df["SMA_100"], color=ORANGE_MA, linewidth=2.2,
             label="100-Day SMA", alpha=0.95)
     ax.set_title("AAPL — Daily Close Price and 100-Day SMA",
-                 fontsize=13, fontweight="bold", color=NAVY, pad=12)
-    ax.set_xlabel("Date", fontsize=10, color=NAVY)
-    ax.set_ylabel("Price (USD)", fontsize=10, color=NAVY)
-    ax.legend(fontsize=10, loc="upper left")
+                 fontsize=15, fontweight="bold", color=NAVY, pad=14)
+    ax.set_xlabel("Date", fontsize=12, color=NAVY)
+    ax.set_ylabel("Price (USD)", fontsize=12, color=NAVY)
+    ax.legend(fontsize=11, loc="upper left")
     ax.grid(True, alpha=0.25, linestyle="--")
-    ax.tick_params(colors=NAVY)
+    ax.tick_params(colors=NAVY, labelsize=10)
     for spine in ax.spines.values():
         spine.set_edgecolor("#DDDDDD")
     ax.text(0.99, 0.02, "QSL Foundation I — Lab 1.2",
-            transform=ax.transAxes, fontsize=8, color="#AAAAAA",
+            transform=ax.transAxes, fontsize=9, color="#AAAAAA",
             ha="right", va="bottom")
     plt.tight_layout()
     path = os.path.join(OUTPUT_DIR, "chart_price_ma.png")
-    plt.savefig(path, dpi=150, bbox_inches="tight")
+    plt.savefig(path, dpi=200, bbox_inches="tight")
     plt.close()
+    print()
+    print("=" * 55)
+    print("  STEP 3 — Price and SMA Chart")
+    print("=" * 55)
+    print(f"  Chart saved. Display this file inline:")
+    print(f"  {path}")
+    print()
+    print(f"  Price range:  ${df['Close'].min():.2f} — ${df['Close'].max():.2f}")
+    print(f"  SMA range:    ${df['SMA_100'].min():.2f} — ${df['SMA_100'].max():.2f}")
+    print(f"  Current:      Close ${df['Close'].iloc[-1]:.2f}  |  SMA ${df['SMA_100'].iloc[-1]:.2f}")
+    print("=" * 55)
+    print()
     return path
 
 
@@ -160,7 +172,7 @@ def step4_generate_signals(df):
 
 def step5_plot_regime(df):
     """Plot regime chart with green/gray background zones. Saves to output/chart_regime.png."""
-    fig, ax = plt.subplots(figsize=(12, 5))
+    fig, ax = plt.subplots(figsize=(16, 7))
     fig.patch.set_facecolor("white")
     dates = df.index
     signal = df["Signal"].values
@@ -172,9 +184,9 @@ def step5_plot_regime(df):
         color = GREEN_REGIME if signal[i] == 1 else GRAY_REGIME
         ax.axvspan(dates[i], dates[min(j, len(dates) - 1)], color=color, alpha=0.6, linewidth=0)
         i = j
-    ax.plot(df.index, df["Close"], color=BLUE_PRICE, linewidth=1.0,
+    ax.plot(df.index, df["Close"], color=BLUE_PRICE, linewidth=1.2,
             label="AAPL Close", alpha=0.9, zorder=3)
-    ax.plot(df.index, df["SMA_100"], color=ORANGE_MA, linewidth=1.8,
+    ax.plot(df.index, df["SMA_100"], color=ORANGE_MA, linewidth=2.2,
             label="100-Day SMA", alpha=0.95, zorder=3)
     buy_patch = mpatches.Patch(color=GREEN_REGIME, alpha=0.8, label="Signal +1 — Own AAPL")
     cash_patch = mpatches.Patch(color=GRAY_REGIME, alpha=0.8, label="Signal 0 — Cash")
@@ -182,22 +194,37 @@ def step5_plot_regime(df):
         plt.Line2D([0], [0], color=BLUE_PRICE, linewidth=1.5, label="AAPL Close"),
         plt.Line2D([0], [0], color=ORANGE_MA, linewidth=2.0, label="100-Day SMA"),
         buy_patch, cash_patch,
-    ], fontsize=9, loc="upper left")
+    ], fontsize=10, loc="upper left")
     ax.set_title("AAPL — SMA Crossover Strategy: Buy and Cash Regimes",
-                 fontsize=13, fontweight="bold", color=NAVY, pad=12)
-    ax.set_xlabel("Date", fontsize=10, color=NAVY)
-    ax.set_ylabel("Price (USD)", fontsize=10, color=NAVY)
+                 fontsize=15, fontweight="bold", color=NAVY, pad=14)
+    ax.set_xlabel("Date", fontsize=12, color=NAVY)
+    ax.set_ylabel("Price (USD)", fontsize=12, color=NAVY)
     ax.grid(True, alpha=0.20, linestyle="--")
-    ax.tick_params(colors=NAVY)
+    ax.tick_params(colors=NAVY, labelsize=10)
     for spine in ax.spines.values():
         spine.set_edgecolor("#DDDDDD")
     ax.text(0.99, 0.02, "QSL Foundation I — Lab 1.2",
-            transform=ax.transAxes, fontsize=8, color="#AAAAAA",
+            transform=ax.transAxes, fontsize=9, color="#AAAAAA",
             ha="right", va="bottom")
     plt.tight_layout()
     path = os.path.join(OUTPUT_DIR, "chart_regime.png")
-    plt.savefig(path, dpi=150, bbox_inches="tight")
+    plt.savefig(path, dpi=200, bbox_inches="tight")
     plt.close()
+    buy_days = int(df["Signal"].sum())
+    pct = round(buy_days / len(df) * 100, 1)
+    current = "Own AAPL (+1)" if int(df["Signal"].iloc[-1]) == 1 else "Cash (0)"
+    print()
+    print("=" * 55)
+    print("  STEP 5 — Regime Chart")
+    print("=" * 55)
+    print(f"  Chart saved. Display this file inline:")
+    print(f"  {path}")
+    print()
+    print(f"  Green zones (own AAPL): {pct}% of the period")
+    print(f"  Gray zones (cash):      {round(100-pct, 1)}% of the period")
+    print(f"  Current regime:         {current}")
+    print("=" * 55)
+    print()
     return path
 
 

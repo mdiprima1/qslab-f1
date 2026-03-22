@@ -79,19 +79,25 @@ The student must see every table and number directly in the chat.
             and what above/below means for the strategy.
 
   Step 3 — Run step3_plot_price_ma(df).
-            Display the image output/chart_price_ma.png
-            INLINE in the conversation using the Read tool.
-            The student must see the chart in the chat window —
-            not in a folder, not in a toggle.
-            Explain the two lines after the image appears.
+            The function prints a summary including the exact file path.
+            IMMEDIATELY after it runs, read the file at that path and
+            display the image directly in the conversation as an attachment
+            using the Read File tool — so the chart appears embedded in
+            the chat history and the student can scroll back to it.
+            Then paste the printed summary text.
+            Then explain the two lines in one short paragraph.
 
   Step 4 — Run step4_generate_signals(df).
             Paste the COMPLETE printed output into the conversation.
             Explain the buy/cash rule using the exact numbers shown.
 
   Step 5 — Run step5_plot_regime(df).
-            Display output/chart_regime.png INLINE in the conversation.
-            Explain the green zones and gray zones after the image.
+            The function prints a summary including the exact file path.
+            IMMEDIATELY after it runs, read the file at that path and
+            display the image directly in the conversation as an attachment
+            so it is embedded in the chat history.
+            Then paste the printed summary text.
+            Then explain the green zones and gray zones in one short paragraph.
 
   Step 6 — Run step6_compute_stats(df).
             Paste the COMPLETE printed stats output into the conversation.
