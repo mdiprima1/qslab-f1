@@ -42,6 +42,24 @@ Stop. Wait for the student. Do nothing else.
 
 ---
 
+## INITIATE COMMAND
+
+When the student says "Initiate QSLab F1", do exactly the same as WHEN THIS FILE IS READ:
+1. Check ~/qslab-f1 — pull if exists, clone if not
+2. Install any missing dependencies silently
+3. Say exactly:
+
+   "QSLab F1 is ready.
+
+   Available labs:
+     F1-1.2  Introduction to Algorithmic Trading
+
+   To begin, say: Start QSLab F1-1.2"
+
+Stop. Wait for the student.
+
+---
+
 ## START COMMANDS
 
 When the student says "Start QSLab F1-1.2":
