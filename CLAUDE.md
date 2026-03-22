@@ -1,38 +1,51 @@
 # QSLab F1 — Claude Code Master File
-## Read this at the start of every session
 
 ---
 
-## WHAT THIS IS
+## INITIATION COMMAND
 
-QSLab F1 is the hands-on research environment for QSL Foundation I.
-Each lab unit mirrors a course unit and gives students a guided,
-prompt-driven research experience using real market data.
+When the student says "Initiate QSLab", do the following automatically.
+Do not ask the student to run any commands. Do not show terminal output.
 
-Students paste prompts from the course website.
-Claude Code executes the lab steps autonomously.
-No coding required from the student.
+1. Check if ~/qslab-f1 exists and contains this CLAUDE.md.
+   - If NOT: run silently — git clone https://github.com/mdiprima1/qslab-f1.git ~/qslab-f1
+     Tell student: "Downloading QSLab F1..."
+   - If YES: run silently — cd ~/qslab-f1 && git pull
+     Tell student: "QSLab F1 is up to date."
+
+2. Check if these Python packages are installed:
+   yfinance, pandas, matplotlib, reportlab, Pillow
+   If any are missing, install silently:
+   pip install yfinance pandas matplotlib reportlab Pillow
+   Tell student: "Dependencies ready."
+
+3. Say exactly:
+
+   "QSLab F1 is ready.
+
+   Available labs:
+     F1-1.2  Introduction to Algorithmic Trading
+
+   To begin a lab, say: Start QSLab F1-1.2"
 
 ---
 
-## REPO STRUCTURE
+## START COMMANDS
 
-  m01-foundations-and-tools/
-    u1.2-intro-to-algo-trading/   <- Lab Unit 1.2
-      CLAUDE.md                   <- Unit-level instructions (read first)
-      lab_1_2.py                  <- Main lab script
-      assets/                     <- QSL logo and static assets
-      output/                     <- Generated charts and PDF (git-ignored)
+When the student says "Start QSLab F1-1.2":
+  Read: m01-foundations-and-tools/u1.2-intro-to-algo-trading/CLAUDE.md
+  Read: m01-foundations-and-tools/u1.2-intro-to-algo-trading/lab_1_2.py
+  Then follow the ACTIVATION SEQUENCE in that CLAUDE.md exactly.
 
 ---
 
 ## GLOBAL RULES FOR ALL LAB UNITS
 
+  Never ask the student to run any CLI commands
+  Never show raw terminal output or tracebacks to the student
   Never modify files outside the current lab unit folder
   Never install packages not listed in the unit CLAUDE.md
-  Never access the internet except via yfinance for market data
   Never produce output beyond what the unit scope defines
-  Never show raw Python tracebacks — explain errors in plain English
   Always save charts to output/ before displaying
   Always save the PDF report to output/ when generated
   Output folder is local only — never commit it
