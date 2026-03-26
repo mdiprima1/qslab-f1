@@ -2,13 +2,11 @@
 QSLab F1 — PDF Generator
 Unit 1.2: Your Research Lab
 
-Generates one PDF per step. Each PDF:
-- Has a consistent QSL header
-- Contains step data in clean tables
-- Embeds the signal chart (step 3)
-- Contains exploration prompts
-- Opens automatically after saving
-- Tells the student exactly where to find it
+Layout standard: ~/qslab-f1/QSL-PDF-STANDARD.md
+All layout decisions (colours, fonts, spacing, boxes) are
+governed by that standard. Read it before modifying this file.
+
+One PDF per step. Saves to ~/QSLab-Output/. Opens automatically.
 """
 
 import os

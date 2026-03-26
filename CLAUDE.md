@@ -30,6 +30,8 @@ When Claude Code reads this file, do exactly this and nothing else:
 
 3. Read QSL-POLICIES.md from ~/qslab-f1/ — these policies govern the entire session.
 
+4. Read QSL-PDF-STANDARD.md from ~/qslab-f1/ — this standard governs all PDF output.
+
 4. Say exactly this and nothing else:
 
    "QSLab F1 is ready.
@@ -54,6 +56,7 @@ When the student says "Start QSLab F1-1.2":
     1. Write the implementation plan (per QSL-POLICIES.md §1)
     2. Wait for student approval
     3. After approval: print session header (per QSL-POLICIES.md §2)
+    Note: all PDF output must follow QSL-PDF-STANDARD.md exactly.
     4. Warn about permissions (per QSL-POLICIES.md §3)
     5. Ask the two questions: which stock? what MA period?
     6. Run steps 1-4 per the ACTIVATION SEQUENCE in the unit CLAUDE.md
