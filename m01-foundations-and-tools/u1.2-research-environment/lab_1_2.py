@@ -5,9 +5,10 @@ Your Research Lab: SMA Signal Explorer
 Executed by Claude Code step by step.
 Students do not run this directly.
 
-Ticker: Student's choice (Claude Code asks — default AAPL)
+Ticker: Student's choice (default: AAPL)
+MA period: Student's choice (default: 100 — try 50 or 200)
 Period: 20 years
-Steps:  4 (simplified — no PDF, no full backtest stats)
+Steps: 4 + rerun option
 """
 
 import os
@@ -23,8 +24,7 @@ import yfinance as yf
 
 warnings.filterwarnings('ignore')
 
-MA_PERIOD = 100
-DATA_PERIOD = "20y"
+START_DATE = "2005-01-01"
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 
 NAVY = "#0A1628"
@@ -39,7 +39,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 def step1_download_data(ticker: str = "AAPL") -> pd.DataFrame:
     """Download 20 years of daily close prices for the chosen ticker."""
     ticker = ticker.upper().strip()
-    raw = yf.download(ticker, period=DATA_PERIOD, auto_adjust=True, progress=False)
+    raw = yf.download(ticker, start=START_DATE, auto_adjust=True, progress=False)
     df = raw[["Close"]].copy()
     df.index = pd.to_datetime(df.index)
     df.columns = ["Close"]
@@ -70,40 +70,42 @@ def step1_download_data(ticker: str = "AAPL") -> pd.DataFrame:
     return df
 
 
-def step2_calculate_sma(df: pd.DataFrame) -> pd.DataFrame:
-    """Calculate 100-day SMA. Drops first 99 rows where SMA is undefined."""
+def step2_calculate_sma(df: pd.DataFrame, ma_period: int = 100) -> pd.DataFrame:
+    """Calculate SMA for the given period. Drops initial rows where SMA is undefined."""
+    col = f"SMA_{ma_period}"
     df = df.copy()
-    df["SMA_100"] = df["Close"].rolling(window=MA_PERIOD).mean().round(2)
+    df[col] = df["Close"].rolling(window=ma_period).mean().round(2)
     df = df.dropna()
     df["Position"] = df.apply(
-        lambda r: "Above SMA ↑" if r["Close"] > r["SMA_100"] else "Below SMA ↓", axis=1
+        lambda r: "Above SMA ↑" if r["Close"] > r[col] else "Below SMA ↓", axis=1
     )
 
     print()
     print("=" * 60)
-    print("  STEP 2 — 100-Day SMA Calculated")
+    print(f"  STEP 2 — {ma_period}-Day SMA Calculated")
     print("=" * 60)
-    print(f"  MA period:     {MA_PERIOD} trading days")
-    print(f"  Rows after:    {len(df):,}  (first 99 rows dropped — SMA needs history)")
+    print(f"  MA period:     {ma_period} trading days")
+    print(f"  Rows after:    {len(df):,}  (first {ma_period - 1} rows dropped — SMA needs history)")
     print()
-    print(f"  {'Date':<14} {'Close':>10} {'SMA_100':>10}  {'':}")
+    print(f"  {'Date':<14} {'Close':>10} {col:>10}  {'':}")
     print("  " + "-" * 50)
     for date, row in df.tail(8).iterrows():
         marker = "◀ TODAY" if date == df.index[-1] else ""
-        print(f"  {date.strftime('%Y-%m-%d'):<14} ${row['Close']:>8.2f} ${row['SMA_100']:>8.2f}  {row['Position']}  {marker}")
+        print(f"  {date.strftime('%Y-%m-%d'):<14} ${row['Close']:>8.2f} ${row[col]:>8.2f}  {row['Position']}  {marker}")
     print()
-    current = "ABOVE — signal +1 (in market)" if df["Close"].iloc[-1] > df["SMA_100"].iloc[-1] else "BELOW — signal 0 (in cash)"
+    current = f"ABOVE — signal +1 (in market)" if df["Close"].iloc[-1] > df[col].iloc[-1] else "BELOW — signal 0 (in cash)"
     print(f"  Current position:  {current}")
     print("=" * 60)
     print()
     return df
 
 
-def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL") -> str:
+def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL", ma_period: int = 100) -> str:
     """Plot price + SMA with green/grey signal zones. Saves to output/."""
     ticker = ticker.upper()
+    col = f"SMA_{ma_period}"
     df = df.copy()
-    df["Signal"] = (df["Close"] > df["SMA_100"]).astype(int)
+    df["Signal"] = (df["Close"] > df[col]).astype(int)
 
     fig, ax = plt.subplots(figsize=(16, 7))
     fig.patch.set_facecolor("white")
@@ -123,18 +125,18 @@ def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL") -> str:
 
     ax.plot(df.index, df["Close"], color=BLUE_PRICE, linewidth=1.3,
             label=f"{ticker} Daily Close", alpha=0.9, zorder=3)
-    ax.plot(df.index, df["SMA_100"], color=ORANGE_MA, linewidth=2.2,
-            label="100-Day SMA", alpha=0.95, zorder=3)
+    ax.plot(df.index, df[col], color=ORANGE_MA, linewidth=2.2,
+            label=f"{ma_period}-Day SMA", alpha=0.95, zorder=3)
 
     green_patch = mpatches.Patch(color=GREEN_REGIME, alpha=0.8, label="Signal +1 — In Market")
     grey_patch  = mpatches.Patch(color=GRAY_REGIME,  alpha=0.8, label="Signal 0 — Cash")
     ax.legend(handles=[
         plt.Line2D([0],[0], color=BLUE_PRICE, linewidth=1.5, label=f"{ticker} Close"),
-        plt.Line2D([0],[0], color=ORANGE_MA,  linewidth=2.0, label="100-Day SMA"),
+        plt.Line2D([0],[0], color=ORANGE_MA,  linewidth=2.0, label=f"{ma_period}-Day SMA"),
         green_patch, grey_patch,
     ], fontsize=10, loc="upper left")
 
-    ax.set_title(f"{ticker} — 100-Day SMA Signal Chart",
+    ax.set_title(f"{ticker} — {ma_period}-Day SMA Signal Chart",
                  fontsize=15, fontweight="bold", color=NAVY, pad=14)
     ax.set_xlabel("Date", fontsize=12, color=NAVY)
     ax.set_ylabel("Price (USD)", fontsize=12, color=NAVY)
@@ -168,11 +170,12 @@ def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL") -> str:
     return path
 
 
-def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL") -> dict:
+def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL", ma_period: int = 100) -> dict:
     """Print the current signal and summary statistics."""
     ticker = ticker.upper()
+    col = f"SMA_{ma_period}"
     df = df.copy()
-    df["Signal"] = (df["Close"] > df["SMA_100"]).astype(int)
+    df["Signal"] = (df["Close"] > df[col]).astype(int)
 
     buy_days  = int((df["Signal"] == 1).sum())
     cash_days = int((df["Signal"] == 0).sum())
@@ -181,7 +184,7 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL") -> dict:
 
     current_signal = int(df["Signal"].iloc[-1])
     current_close  = round(float(df["Close"].iloc[-1]), 2)
-    current_sma    = round(float(df["SMA_100"].iloc[-1]), 2)
+    current_sma    = round(float(df[col].iloc[-1]), 2)
     spread         = round(current_close - current_sma, 2)
     spread_pct     = round(spread / current_sma * 100, 1)
 
@@ -197,7 +200,7 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL") -> dict:
     print(f"  Signal changes:       {transitions}")
     print()
     print(f"  Today's close:  ${current_close}")
-    print(f"  100-day SMA:    ${current_sma}")
+    print(f"  {ma_period}-day SMA:    ${current_sma}")
     print(f"  Spread:         {spread_label}")
     print()
     print(f"  ▶  Current signal:  {signal_label}")
@@ -212,14 +215,10 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL") -> dict:
         print(f"  (i.e. above ${current_sma:.2f})")
     print("=" * 55)
     print()
-    print("  You have just run a moving average strategy on real data.")
-    print("  The next unit shows how to validate whether it would have made money.")
-    print()
-    print("  When you are ready, type:  Start QSLab F1-1.3")
-    print()
 
     return {
         "ticker": ticker,
+        "ma_period": ma_period,
         "days_in_market": buy_days,
         "days_in_cash": cash_days,
         "pct_in_market": pct_in,
@@ -230,3 +229,42 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL") -> dict:
         "current_sma": current_sma,
         "spread": spread,
     }
+
+
+def rerun_prompt(df_raw: pd.DataFrame, ticker: str, original_period: int, original_transitions: int):
+    """Offer the student a rerun with a different MA period."""
+    print()
+    print("  " + "─" * 53)
+    print("  Want to see how the chart changes with a different period?")
+    print(f"  You just used a {original_period}-day SMA.")
+    print("  Try 50 (more signals) or 200 (fewer signals).")
+    print()
+    print("  Type a new MA period and press Enter, or press Enter to finish:")
+    print("  " + "─" * 53)
+
+
+def run_rerun(df_raw: pd.DataFrame, ticker: str, new_period: int,
+              original_period: int, original_transitions: int):
+    """Rerun steps 2-4 with a new MA period and print comparison."""
+    df2 = step2_calculate_sma(df_raw, ma_period=new_period)
+    step3_plot_signal_chart(df2, ticker=ticker, ma_period=new_period)
+    result = step4_signal_summary(df2, ticker=ticker, ma_period=new_period)
+
+    new_transitions = result["signal_changes"]
+    print()
+    print("  " + "─" * 53)
+    print(f"  {original_period}-day SMA: {original_transitions} signal changes")
+    print(f"  {new_period}-day SMA: {new_transitions} signal changes")
+    print("  Same stock. Different rule. Different result.")
+    print("  " + "─" * 53)
+    print()
+
+
+def print_closing():
+    """Print the closing message and Unit 1.3 forward hook."""
+    print("  You have run a moving average strategy on real data.")
+    print("  The next unit shows how to validate whether it would have made money")
+    print("  properly — with real costs and professional data.")
+    print()
+    print("  When you are ready, type:  Start QSLab F1-1.3")
+    print()
