@@ -77,22 +77,32 @@ When student says "Start QSLab F1-1.2":
 
   Step 1 — Run step1_download_data(ticker) in lab_1_2.py
     Paste complete output.
+    Then print a markdown table in the chat (per QSL-POLICIES.md §4):
+    | Field | Value |
+    Ticker, Period, Trading days, Start price, End price, Total return.
     Explain: what the date range means, what the total return tells them.
 
   Step 2 — Run step2_calculate_sma(df, ma_period) in lab_1_2.py
-    Paste complete output (the table with Close, SMA_{period}, Position).
+    Paste complete output.
+    Then print last 8 rows as a markdown table in the chat (per QSL-POLICIES.md §4):
+    | Date | Close | SMA_{period} | Position |
     Explain: why the SMA moves slowly, what Above/Below means for the signal.
 
   Step 3 — Run step3_plot_signal_chart(df, ticker, ma_period) in lab_1_2.py
     Display the chart inline immediately after saving.
+    Chart must be large — minimum figsize=(18, 8), dpi=200.
+    Chart must remain visible in the chat after step 4 runs.
     Paste the printed summary.
     Explain: what the green and grey zones show, name one real-world event
     visible in the chart if possible (e.g. 2022 bear market, March 2020).
 
   Step 4 — Run step4_signal_summary(df, ticker, ma_period) in lab_1_2.py
     Paste complete output.
-    Explain the "signal flip" line in plain English — how far the stock
-    would need to move to change the current signal.
+    Then print a markdown summary table in the chat (per QSL-POLICIES.md §4):
+    | Metric | Value |
+    Days in market, Days in cash, Signal changes, Current signal,
+    Current close, Current SMA, Points to flip.
+    Explain the signal flip line in plain English.
 
   After Step 4 — Run rerun_prompt(df_raw, ticker, ma_period, transitions)
     Show the rerun offer. If student enters a new period:

@@ -107,7 +107,7 @@ def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL", ma_period: i
     df = df.copy()
     df["Signal"] = (df["Close"] > df[col]).astype(int)
 
-    fig, ax = plt.subplots(figsize=(16, 7))
+    fig, ax = plt.subplots(figsize=(18, 8))
     fig.patch.set_facecolor("white")
 
     # Shade signal zones
@@ -150,7 +150,7 @@ def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL", ma_period: i
 
     plt.tight_layout()
     path = os.path.join(OUTPUT_DIR, f"chart_signal_{ticker.lower()}.png")
-    plt.savefig(path, dpi=200, bbox_inches="tight")
+    plt.savefig(path, dpi=220, bbox_inches="tight")
     plt.close()
 
     buy_days = int((df["Signal"] == 1).sum())

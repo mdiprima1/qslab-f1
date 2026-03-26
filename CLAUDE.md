@@ -1,4 +1,5 @@
 # QSLab F1 — Claude Code Master File
+## Read this file at the start of every QSLab session
 
 ---
 
@@ -8,9 +9,7 @@
   Never push to GitHub. Ever.
   Never run git add, git commit, or git push for any reason.
   Never modify any lab .py file or any .md file in this repo.
-  Never run a smoke test or verify steps automatically.
-  Never summarise the repo contents unprompted.
-  Never run all steps at once.
+  Never run all steps at once — one step at a time, wait for student.
   The repo is read-only. Output goes to output/ only.
 
 ---
@@ -29,7 +28,9 @@ When Claude Code reads this file, do exactly this and nothing else:
    If any missing, install silently: pip install yfinance pandas matplotlib reportlab Pillow
    Tell student: "Dependencies ready."
 
-3. Say exactly this and nothing else:
+3. Read QSL-POLICIES.md from ~/qslab-f1/ — these policies govern the entire session.
+
+4. Say exactly this and nothing else:
 
    "QSLab F1 is ready.
 
@@ -43,65 +44,60 @@ Stop. Wait for the student. Do nothing else.
 
 ---
 
-## INITIATE COMMAND
-
-When the student says "Initiate QSLab F1", do exactly the same as WHEN THIS FILE IS READ:
-1. Check ~/qslab-f1 — pull if exists, clone if not
-2. Read QSL-SETUP.md, QSL-REQUIREMENTS.txt, and QSL-POLICIES.md
-   from ~/qslab-f1/ and follow all setup instructions.
-3. Install any missing dependencies silently
-4. Say exactly:
-
-   "QSLab F1 is ready.
-
-   Available labs:
-     F1-1.2  Your Research Lab
-     F1-4.1  The Moving Average Signal
-
-   To begin, say: Start QSLab F1-1.2"
-
-Stop. Wait for the student.
-
----
-
 ## START COMMANDS
 
 When the student says "Start QSLab F1-1.2":
   Read: ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/CLAUDE.md
   Read: ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/lab_1_2.py
-  Then follow the ACTIVATION SEQUENCE in that CLAUDE.md exactly.
-  Run steps one at a time. Wait between steps.
-  Do not run all steps at once.
+  Read: ~/qslab-f1/QSL-POLICIES.md
+  Then follow EXACTLY:
+    1. Write the implementation plan (per QSL-POLICIES.md §1)
+    2. Wait for student approval
+    3. After approval: print session header (per QSL-POLICIES.md §2)
+    4. Warn about permissions (per QSL-POLICIES.md §3)
+    5. Ask the two questions: which stock? what MA period?
+    6. Run steps 1-4 per the ACTIVATION SEQUENCE in the unit CLAUDE.md
+    7. Produce markdown tables after every step (per QSL-POLICIES.md §4)
+    8. Display charts inline at large size (per QSL-POLICIES.md §4)
 
 When the student says "Start QSLab F1-4.1":
   Read: ~/qslab-f1/m04-trend-following/u4.1-moving-average-signal/CLAUDE.md
   Read: ~/qslab-f1/m04-trend-following/u4.1-moving-average-signal/lab_4_1.py
-  Then follow the ACTIVATION SEQUENCE in that CLAUDE.md exactly.
-  Run steps one at a time. Wait between steps.
-  Do not run all steps at once.
+  Read: ~/qslab-f1/QSL-POLICIES.md
+  Follow the same policy sequence above.
 
 ---
 
 ## PERMISSIONS
 
 This lab requires executing Python scripts and bash commands.
-Do not ask for approval before running commands.
-Execute all lab steps without interruption.
+Do not ask for approval before running commands — the implementation
+plan approval covers the session.
 
-If the student sees approval prompts, tell them:
-"Click the permission selector in the bottom prompt area and
-switch it to Auto — this lets the lab run without interruption."
+Tell the student about permissions once, in the plan:
+"During this lab I will write chart files to your computer.
+When you see a permission prompt, click Allow once to continue."
+
+If a permission prompt appears mid-step:
+  Pause and say: "A permission prompt has appeared. Click Allow once to continue."
+
+If the student sees the permission selector in the bottom prompt area,
+tell them: "Click the permission selector and switch it to
+'Auto' — this lets the lab run without interruption."
 
 ---
 
-## GLOBAL RULES
+## GLOBAL RULES (from QSL-POLICIES.md)
 
   Never commit or push to git
   Never modify any repo files
-  Never ask the student to run CLI commands
   Never show raw tracebacks — explain errors in plain English
-  Always save charts and PDF to output/ before showing them
+  Always display charts inline immediately after saving
+  Always paste complete terminal output — never summarise
+  Always print markdown tables after steps 1, 2, and 4
+  Charts minimum figsize=(18, 8), dpi=200
   output/ is local only — never commit it
+  One step at a time — wait for student between steps
 
 ---
 
