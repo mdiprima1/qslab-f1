@@ -26,7 +26,7 @@ Step 4 — Start the lab:
 Ask me which stock to analyse and what MA period.
 Then call run_lab(ticker, ma_period) and let it run automatically.
 Display the signal chart inline when done.
-Tell me where the PDF was saved.
+Print the PDF path from the run_lab() return value — do not open or display the file.
 Then ask if I want to run the analysis on a different stock.
 ```
 
