@@ -32,14 +32,14 @@ from pdf_generator import (
 warnings.filterwarnings('ignore')
 
 START_DATE   = "2005-01-01"
-OUTPUT_DIR   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
+
+from pdf_generator import OUTPUT_DIR
+
 NAVY         = "#0A1628"
 BLUE_PRICE   = "#1565C0"
 ORANGE_MA    = "#E65100"
 GREEN_REGIME = "#C8E6C9"
 GRAY_REGIME  = "#F0F0F0"
-
-os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 def step1_download_data(ticker: str = "AAPL") -> pd.DataFrame:

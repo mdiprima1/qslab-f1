@@ -36,8 +36,18 @@ WHITE       = colors.white
 MID_GREY    = colors.HexColor("#888888")
 BORDER_GREY = colors.HexColor("#DDDDDD")
 
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+def _get_output_dir() -> str:
+    """
+    Save PDFs in the student's working folder, not inside the repo.
+    Priority:
+      1. ~/QSLab-Output/  (always use this — consistent, easy to find)
+    Creates the folder if it does not exist.
+    """
+    output_dir = os.path.expanduser("~/QSLab-Output")
+    os.makedirs(output_dir, exist_ok=True)
+    return output_dir
+
+OUTPUT_DIR = _get_output_dir()
 
 
 def _styles():
