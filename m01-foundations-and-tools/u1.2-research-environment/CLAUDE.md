@@ -42,7 +42,7 @@ Install if missing: pip install yfinance pandas matplotlib
   Ticker:     Student's choice — Claude Code asks them
               Default to AAPL if student does not specify
   MA period:  100 days (locked)
-  Period:     5y (yfinance)
+  Period:     20y (yfinance, from 2005-01-01)
   Signal:     Close > SMA_100 → signal = +1 (in market)
               Close ≤ SMA_100 → signal =  0 (in cash)
 

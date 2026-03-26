@@ -6,7 +6,7 @@ Executed by Claude Code step by step.
 Students do not run this directly.
 
 Ticker: Student's choice (Claude Code asks — default AAPL)
-Period: 5 years
+Period: 20 years
 Steps:  4 (simplified — no PDF, no full backtest stats)
 """
 
@@ -24,7 +24,7 @@ import yfinance as yf
 warnings.filterwarnings('ignore')
 
 MA_PERIOD = 100
-DATA_PERIOD = "5y"
+DATA_PERIOD = "20y"
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 
 NAVY = "#0A1628"
@@ -37,7 +37,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 def step1_download_data(ticker: str = "AAPL") -> pd.DataFrame:
-    """Download 5 years of daily close prices for the chosen ticker."""
+    """Download 20 years of daily close prices for the chosen ticker."""
     ticker = ticker.upper().strip()
     raw = yf.download(ticker, period=DATA_PERIOD, auto_adjust=True, progress=False)
     df = raw[["Close"]].copy()
