@@ -7,7 +7,7 @@
   Never commit anything to git. Ever. This is a student machine.
   Never push to GitHub. Ever.
   Never run git add, git commit, or git push for any reason.
-  Never modify lab_1_2.py or any .md file in this repo.
+  Never modify any lab .py file or any .md file in this repo.
   Never run a smoke test or verify steps automatically.
   Never summarise the repo contents unprompted.
   Never run all steps at once.
@@ -34,7 +34,8 @@ When Claude Code reads this file, do exactly this and nothing else:
    "QSLab F1 is ready.
 
    Available labs:
-     F1-1.2  Introduction to Algorithmic Trading
+     F1-1.2  Your Research Environment
+     F1-4.1  The Moving Average Signal
 
    To begin, say: Start QSLab F1-1.2"
 
@@ -46,13 +47,16 @@ Stop. Wait for the student. Do nothing else.
 
 When the student says "Initiate QSLab F1", do exactly the same as WHEN THIS FILE IS READ:
 1. Check ~/qslab-f1 — pull if exists, clone if not
-2. Install any missing dependencies silently
-3. Say exactly:
+2. Read QSL-SETUP.md, QSL-REQUIREMENTS.txt, and QSL-POLICIES.md
+   from ~/qslab-f1/ and follow all setup instructions.
+3. Install any missing dependencies silently
+4. Say exactly:
 
    "QSLab F1 is ready.
 
    Available labs:
-     F1-1.2  Introduction to Algorithmic Trading
+     F1-1.2  Your Research Environment
+     F1-4.1  The Moving Average Signal
 
    To begin, say: Start QSLab F1-1.2"
 
@@ -63,8 +67,15 @@ Stop. Wait for the student.
 ## START COMMANDS
 
 When the student says "Start QSLab F1-1.2":
-  Read: ~/qslab-f1/m01-foundations-and-tools/u1.2-intro-to-algo-trading/CLAUDE.md
-  Read: ~/qslab-f1/m01-foundations-and-tools/u1.2-intro-to-algo-trading/lab_1_2.py
+  Read: ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/CLAUDE.md
+  Read: ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/lab_1_2.py
+  Then follow the ACTIVATION SEQUENCE in that CLAUDE.md exactly.
+  Run steps one at a time. Wait between steps.
+  Do not run all steps at once.
+
+When the student says "Start QSLab F1-4.1":
+  Read: ~/qslab-f1/m04-trend-following/u4.1-moving-average-signal/CLAUDE.md
+  Read: ~/qslab-f1/m04-trend-following/u4.1-moving-average-signal/lab_4_1.py
   Then follow the ACTIVATION SEQUENCE in that CLAUDE.md exactly.
   Run steps one at a time. Wait between steps.
   Do not run all steps at once.

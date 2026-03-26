@@ -1,5 +1,5 @@
 """
-QSLab F1 — Lab Unit 1.2
+QSLab F1 — Lab Unit 4.1
 Introduction to Algorithmic Trading: AAPL 100-Day SMA Strategy
 
 Executed by Claude Code step by step.
@@ -113,7 +113,7 @@ def step3_plot_price_ma(df):
     ax.tick_params(colors=NAVY, labelsize=10)
     for spine in ax.spines.values():
         spine.set_edgecolor("#DDDDDD")
-    ax.text(0.99, 0.02, "QSL Foundation I — Lab 1.2",
+    ax.text(0.99, 0.02, "QSL Foundation I — Lab 4.1",
             transform=ax.transAxes, fontsize=9, color="#AAAAAA",
             ha="right", va="bottom")
     plt.tight_layout()
@@ -203,7 +203,7 @@ def step5_plot_regime(df):
     ax.tick_params(colors=NAVY, labelsize=10)
     for spine in ax.spines.values():
         spine.set_edgecolor("#DDDDDD")
-    ax.text(0.99, 0.02, "QSL Foundation I — Lab 1.2",
+    ax.text(0.99, 0.02, "QSL Foundation I — Lab 4.1",
             transform=ax.transAxes, fontsize=9, color="#AAAAAA",
             ha="right", va="bottom")
     plt.tight_layout()
@@ -295,7 +295,7 @@ def step6_print_stats(stats):
     print()
 
 def step7_generate_pdf(stats, chart_price_ma, chart_regime):
-    """Generate QSL-branded PDF research report. Saves to output/lab_1_2_report.pdf."""
+    """Generate QSL-branded PDF research report. Saves to output/lab_4_1_report.pdf."""
     from reportlab.lib.pagesizes import letter
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.units import inch
@@ -306,7 +306,7 @@ def step7_generate_pdf(stats, chart_price_ma, chart_regime):
     )
     from reportlab.lib.enums import TA_CENTER, TA_LEFT
 
-    pdf_path = os.path.join(OUTPUT_DIR, "lab_1_2_report.pdf")
+    pdf_path = os.path.join(OUTPUT_DIR, "lab_4_1_report.pdf")
     doc = SimpleDocTemplate(
         pdf_path, pagesize=letter,
         leftMargin=0.85 * inch, rightMargin=0.85 * inch,
@@ -341,7 +341,7 @@ def step7_generate_pdf(stats, chart_price_ma, chart_regime):
     story = []
 
     logo_img = Image(LOGO_PATH, width=1.6 * inch, height=0.6 * inch)
-    title_p = Paragraph("<b>Lab Unit 1.2 — Introduction to Algorithmic Trading</b>",
+    title_p = Paragraph("<b>Lab Unit 4.1 — Introduction to Algorithmic Trading</b>",
                          ParagraphStyle("t", parent=styles["Normal"], fontSize=15,
                                         fontName="Helvetica-Bold", textColor=NAVY_RL,
                                         leading=20, alignment=TA_LEFT))
@@ -472,7 +472,7 @@ def step7_generate_pdf(stats, chart_price_ma, chart_regime):
     story.append(HRFlowable(width="100%", thickness=0.5,
                              color=colors.HexColor("#DDDDDD"), spaceAfter=6))
     story.append(Paragraph(
-        f"QSL Foundation I — Lab Unit 1.2  |  "
+        f"QSL Foundation I — Lab Unit 4.1  |  "
         f"Generated {datetime.today().strftime('%B %d, %Y')}  |  quantstrategylab.com",
         footer_s))
 
