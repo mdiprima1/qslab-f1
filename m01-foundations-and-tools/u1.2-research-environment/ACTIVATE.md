@@ -1,50 +1,36 @@
-# QSLab F1-1.2 — Student Activation Prompt
-## Copy this entire block and paste it into a new Claude Code session
+# QSLab F1-1.2 — Activation Prompt
+## Copy this entire block and paste into a fresh Claude Code session
 
 ---
 
-## COPY FROM HERE ↓
+```
+Please set up and start QSLab F1-1.2.
 
-Please do the following in order. Do not skip any step.
+Step 1 — Get the files:
+Check if ~/qslab-f1 exists. If not, clone it: git clone https://github.com/mdiprima1/qslab-f1.git ~/qslab-f1
+If it exists, run: cd ~/qslab-f1 && git pull
 
-**Step 1 — Get the lab files**
+Step 2 — Install packages:
+pip install yfinance pandas matplotlib --quiet
 
-Check if the folder ~/qslab-f1 exists on this computer.
+Step 3 — Read these files IN THIS ORDER before doing anything else:
+1. ~/qslab-f1/CLAUDE.md
+2. ~/qslab-f1/QSL-POLICIES.md
+3. ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/CLAUDE.md
+4. ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/lab_1_2.py
 
-If it does NOT exist:
-  Run: git clone https://github.com/mdiprima1/qslab-f1.git ~/qslab-f1
-  Tell me: "Lab files downloaded."
-
-If it already exists:
-  Run: cd ~/qslab-f1 && git pull
-  Tell me: "Lab files are up to date."
-
-**Step 2 — Install required packages**
-
-Run: pip install yfinance pandas matplotlib --quiet
-Tell me: "Packages ready."
-
-**Step 3 — Read the lab instructions**
-
-Read this file: ~/qslab-f1/CLAUDE.md
-Then read: ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/CLAUDE.md
-Then read: ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/lab_1_2.py
-
-**Step 4 — Start the lab**
-
-Follow the ACTIVATION SEQUENCE in the unit CLAUDE.md exactly.
-Ask me the two questions (which stock, which MA period), then run steps 1-4 one at a time.
-
-## COPY TO HERE ↑
+Step 4 — Follow QSL-POLICIES.md exactly:
+- Write the implementation plan and wait for my approval (Policy §1)
+- After approval, print the session header (Policy §2)
+- Warn me about permissions (Policy §3)
+- Ask the two questions: which stock? what MA period?
+- Run steps 1-4 one at a time, printing markdown tables after each step (Policy §4)
+- Display charts inline at large size (Policy §4)
+```
 
 ---
 
-## FOR THE SLIDE PROMPT (what appears on the unit slide)
+## FOR SLIDE 14
 
-The slide shows a single copyable prompt:
-
-```
-Please set up and start QSLab F1-1.2. Check if ~/qslab-f1 exists — if not, clone it from github.com/mdiprima1/qslab-f1. If yes, run git pull. Then install yfinance, pandas, and matplotlib if needed. Then read ~/qslab-f1/CLAUDE.md and ~/qslab-f1/m01-foundations-and-tools/u1.2-research-environment/CLAUDE.md and follow the activation sequence.
-```
-
-This is one prompt, pasted once, works from a cold session.
+The above prompt is what appears on slide 14 as the copyable prompt.
+It works from a cold session with no prior context.
