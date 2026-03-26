@@ -13,7 +13,6 @@ Steps: 4 + rerun option
 
 import os
 import warnings
-from datetime import datetime
 
 import matplotlib
 matplotlib.use('Agg')
@@ -22,16 +21,23 @@ import matplotlib.patches as mpatches
 import pandas as pd
 import yfinance as yf
 
+from pdf_generator import (
+    generate_step1_pdf,
+    generate_step2_pdf,
+    generate_step3_pdf,
+    generate_step4_pdf,
+    generate_rerun_pdf,
+)
+
 warnings.filterwarnings('ignore')
 
-START_DATE = "2005-01-01"
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
-
-NAVY = "#0A1628"
-BLUE_PRICE = "#1565C0"
-ORANGE_MA = "#E65100"
+START_DATE   = "2005-01-01"
+OUTPUT_DIR   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
+NAVY         = "#0A1628"
+BLUE_PRICE   = "#1565C0"
+ORANGE_MA    = "#E65100"
 GREEN_REGIME = "#C8E6C9"
-GRAY_REGIME = "#F0F0F0"
+GRAY_REGIME  = "#F0F0F0"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -67,11 +73,13 @@ def step1_download_data(ticker: str = "AAPL") -> pd.DataFrame:
         print(f"  {date.strftime('%Y-%m-%d')}   ${row['Close']:.2f}")
     print("=" * 55)
     print()
+    generate_step1_pdf(df, ticker)
     return df
 
 
-def step2_calculate_sma(df: pd.DataFrame, ma_period: int = 100) -> pd.DataFrame:
+def step2_calculate_sma(df: pd.DataFrame, ticker: str = "AAPL", ma_period: int = 100) -> pd.DataFrame:
     """Calculate SMA for the given period. Drops initial rows where SMA is undefined."""
+    ticker = ticker.upper()
     col = f"SMA_{ma_period}"
     df = df.copy()
     df[col] = df["Close"].rolling(window=ma_period).mean().round(2)
@@ -85,18 +93,19 @@ def step2_calculate_sma(df: pd.DataFrame, ma_period: int = 100) -> pd.DataFrame:
     print(f"  STEP 2 — {ma_period}-Day SMA Calculated")
     print("=" * 60)
     print(f"  MA period:     {ma_period} trading days")
-    print(f"  Rows after:    {len(df):,}  (first {ma_period - 1} rows dropped — SMA needs history)")
+    print(f"  Rows after:    {len(df):,}  (first {ma_period-1} rows dropped)")
     print()
-    print(f"  {'Date':<14} {'Close':>10} {col:>10}  {'':}")
-    print("  " + "-" * 50)
+    print(f"  {'Date':<14} {'Close':>10} {col:>12}  Position")
+    print("  " + "-" * 55)
     for date, row in df.tail(8).iterrows():
         marker = "◀ TODAY" if date == df.index[-1] else ""
-        print(f"  {date.strftime('%Y-%m-%d'):<14} ${row['Close']:>8.2f} ${row[col]:>8.2f}  {row['Position']}  {marker}")
+        print(f"  {date.strftime('%Y-%m-%d'):<14} ${row['Close']:>8.2f} ${row[col]:>10.2f}  {row['Position']}  {marker}")
     print()
-    current = f"ABOVE — signal +1 (in market)" if df["Close"].iloc[-1] > df[col].iloc[-1] else "BELOW — signal 0 (in cash)"
+    current = "ABOVE — signal +1 (in market)" if df["Close"].iloc[-1] > df[col].iloc[-1] else "BELOW — signal 0 (in cash)"
     print(f"  Current position:  {current}")
     print("=" * 60)
     print()
+    generate_step2_pdf(df, ticker, ma_period)
     return df
 
 
@@ -110,7 +119,6 @@ def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL", ma_period: i
     fig, ax = plt.subplots(figsize=(18, 8))
     fig.patch.set_facecolor("white")
 
-    # Shade signal zones
     dates = df.index
     signal = df["Signal"].values
     i = 0
@@ -123,10 +131,8 @@ def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL", ma_period: i
         ax.axvspan(dates[i], dates[end_idx], color=color, alpha=0.55, linewidth=0)
         i = j
 
-    ax.plot(df.index, df["Close"], color=BLUE_PRICE, linewidth=1.3,
-            label=f"{ticker} Daily Close", alpha=0.9, zorder=3)
-    ax.plot(df.index, df[col], color=ORANGE_MA, linewidth=2.2,
-            label=f"{ma_period}-Day SMA", alpha=0.95, zorder=3)
+    ax.plot(df.index, df["Close"], color=BLUE_PRICE, linewidth=1.3, alpha=0.9, zorder=3)
+    ax.plot(df.index, df[col], color=ORANGE_MA, linewidth=2.2, alpha=0.95, zorder=3)
 
     green_patch = mpatches.Patch(color=GREEN_REGIME, alpha=0.8, label="Signal +1 — In Market")
     grey_patch  = mpatches.Patch(color=GRAY_REGIME,  alpha=0.8, label="Signal 0 — Cash")
@@ -145,11 +151,10 @@ def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL", ma_period: i
     for spine in ax.spines.values():
         spine.set_edgecolor("#DDDDDD")
     ax.text(0.99, 0.02, "QSL Foundation I — Lab 1.2",
-            transform=ax.transAxes, fontsize=9, color="#AAAAAA",
-            ha="right", va="bottom")
+            transform=ax.transAxes, fontsize=9, color="#AAAAAA", ha="right", va="bottom")
 
     plt.tight_layout()
-    path = os.path.join(OUTPUT_DIR, f"chart_signal_{ticker.lower()}.png")
+    path = os.path.join(OUTPUT_DIR, f"chart_signal_{ticker.lower()}_{ma_period}d.png")
     plt.savefig(path, dpi=220, bbox_inches="tight")
     plt.close()
 
@@ -158,15 +163,15 @@ def step3_plot_signal_chart(df: pd.DataFrame, ticker: str = "AAPL", ma_period: i
 
     print()
     print("=" * 55)
-    print(f"  STEP 3 — Signal Chart Saved")
+    print(f"  STEP 3 — Signal Chart")
     print("=" * 55)
-    print(f"  Chart saved. Display this file inline:")
-    print(f"  {path}")
+    print(f"  Chart saved: {path}")
     print()
-    print(f"  Green zones (in market, signal +1): {pct}% of the period")
-    print(f"  Grey zones  (in cash,  signal  0):  {round(100-pct, 1)}% of the period")
+    print(f"  Green zones (signal +1, in market): {pct}%")
+    print(f"  Grey zones  (signal  0, in cash):   {round(100-pct,1)}%")
     print("=" * 55)
     print()
+    generate_step3_pdf(path, ticker, ma_period, pct)
     return path
 
 
@@ -177,9 +182,9 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL", ma_period: int 
     df = df.copy()
     df["Signal"] = (df["Close"] > df[col]).astype(int)
 
-    buy_days  = int((df["Signal"] == 1).sum())
-    cash_days = int((df["Signal"] == 0).sum())
-    pct_in    = round(buy_days / len(df) * 100, 1)
+    buy_days    = int((df["Signal"] == 1).sum())
+    cash_days   = int((df["Signal"] == 0).sum())
+    pct_in      = round(buy_days / len(df) * 100, 1)
     transitions = int((df["Signal"].diff().abs() > 0).sum())
 
     current_signal = int(df["Signal"].iloc[-1])
@@ -196,7 +201,7 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL", ma_period: int 
     print(f"  STEP 4 — Signal Summary for {ticker}")
     print("=" * 55)
     print(f"  Days in market (+1):  {buy_days:,} ({pct_in}%)")
-    print(f"  Days in cash   ( 0):  {cash_days:,} ({round(100-pct_in, 1)}%)")
+    print(f"  Days in cash   ( 0):  {cash_days:,} ({round(100-pct_in,1)}%)")
     print(f"  Signal changes:       {transitions}")
     print()
     print(f"  Today's close:  ${current_close}")
@@ -206,29 +211,21 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str = "AAPL", ma_period: int 
     print(f"  ▶  Current signal:  {signal_label}")
     print()
     if current_signal == 1:
-        drop_needed = round(current_close - current_sma, 2)
-        print(f"  Signal flips to 0 if {ticker} falls ${drop_needed:.2f} or more")
-        print(f"  (i.e. below ${current_sma:.2f})")
+        print(f"  Signal flips to 0 if {ticker} falls ${abs(spread):.2f} or more (below ${current_sma:.2f})")
     else:
-        rise_needed = round(current_sma - current_close, 2)
-        print(f"  Signal flips to +1 if {ticker} rises ${rise_needed:.2f} or more")
-        print(f"  (i.e. above ${current_sma:.2f})")
+        print(f"  Signal flips to +1 if {ticker} rises ${abs(spread):.2f} or more (above ${current_sma:.2f})")
     print("=" * 55)
     print()
 
-    return {
-        "ticker": ticker,
-        "ma_period": ma_period,
-        "days_in_market": buy_days,
-        "days_in_cash": cash_days,
-        "pct_in_market": pct_in,
-        "signal_changes": transitions,
-        "current_signal": current_signal,
-        "current_signal_label": signal_label,
-        "current_close": current_close,
-        "current_sma": current_sma,
-        "spread": spread,
+    result = {
+        "ticker": ticker, "ma_period": ma_period,
+        "days_in_market": buy_days, "days_in_cash": cash_days,
+        "pct_in_market": pct_in, "signal_changes": transitions,
+        "current_signal": current_signal, "current_signal_label": signal_label,
+        "current_close": current_close, "current_sma": current_sma, "spread": spread,
     }
+    generate_step4_pdf(result, ticker, ma_period)
+    return result
 
 
 def rerun_prompt(df_raw: pd.DataFrame, ticker: str, original_period: int, original_transitions: int):
@@ -245,12 +242,33 @@ def rerun_prompt(df_raw: pd.DataFrame, ticker: str, original_period: int, origin
 
 def run_rerun(df_raw: pd.DataFrame, ticker: str, new_period: int,
               original_period: int, original_transitions: int):
-    """Rerun steps 2-4 with a new MA period and print comparison."""
-    df2 = step2_calculate_sma(df_raw, ma_period=new_period)
+    """Rerun steps 2-4 with a new MA period and generate comparison PDF."""
+    # Run new period
+    df2 = step2_calculate_sma(df_raw, ticker=ticker, ma_period=new_period)
     step3_plot_signal_chart(df2, ticker=ticker, ma_period=new_period)
-    result = step4_signal_summary(df2, ticker=ticker, ma_period=new_period)
+    result_new = step4_signal_summary(df2, ticker=ticker, ma_period=new_period)
 
-    new_transitions = result["signal_changes"]
+    # Rebuild original period result for comparison PDF
+    col_orig = f"SMA_{original_period}"
+    df_orig = df_raw.copy()
+    df_orig[col_orig] = df_orig["Close"].rolling(window=original_period).mean().round(2)
+    df_orig = df_orig.dropna()
+    df_orig["Signal"] = (df_orig["Close"] > df_orig[col_orig]).astype(int)
+
+    buy_orig = int((df_orig["Signal"] == 1).sum())
+    result_orig = {
+        "ticker": ticker.upper(), "ma_period": original_period,
+        "days_in_market": buy_orig, "days_in_cash": len(df_orig) - buy_orig,
+        "pct_in_market": round(buy_orig / len(df_orig) * 100, 1),
+        "signal_changes": original_transitions,
+        "current_signal": int(df_orig["Signal"].iloc[-1]),
+        "current_signal_label": "Signal +1 — Own the stock" if df_orig["Signal"].iloc[-1] == 1 else "Signal 0 — Hold cash",
+        "current_close": round(float(df_orig["Close"].iloc[-1]), 2),
+        "current_sma": round(float(df_orig[col_orig].iloc[-1]), 2),
+        "spread": round(float(df_orig["Close"].iloc[-1]) - float(df_orig[col_orig].iloc[-1]), 2),
+    }
+
+    new_transitions = result_new["signal_changes"]
     print()
     print("  " + "─" * 53)
     print(f"  {original_period}-day SMA: {original_transitions} signal changes")
@@ -258,6 +276,7 @@ def run_rerun(df_raw: pd.DataFrame, ticker: str, new_period: int,
     print("  Same stock. Different rule. Different result.")
     print("  " + "─" * 53)
     print()
+    generate_rerun_pdf(result_orig, result_new, ticker, original_period, new_period)
 
 
 def print_closing():
