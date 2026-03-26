@@ -62,10 +62,7 @@ def _styles():
         "limitation":  ParagraphStyle("li", fontSize=9,   textColor=GREY_DARK,   fontName="Helvetica-Oblique", leading=13, spaceBefore=5),
         "signal_in":   ParagraphStyle("si", fontSize=15,  textColor=GREEN_FILL,  fontName="Helvetica-Bold",  leading=20, alignment=TA_CENTER),
         "signal_out":  ParagraphStyle("so", fontSize=15,  textColor=GREY_DARK,   fontName="Helvetica-Bold",  leading=20, alignment=TA_CENTER),
-        "prompt_head": ParagraphStyle("ph", fontSize=9,   textColor=ORANGE,      fontName="Helvetica-Bold",  leading=13),
-        "prompt_item": ParagraphStyle("pi", fontSize=9,   textColor=NAVY,        fontName="Helvetica",       leading=14, leftIndent=8),
         "footer":      ParagraphStyle("fo", fontSize=7.5, textColor=MID_GREY,    fontName="Helvetica",       alignment=TA_CENTER),
-        "hook_body":   ParagraphStyle("hb", fontSize=9,   textColor=NAVY,        fontName="Helvetica",       leading=14),
     }
 
 
@@ -97,24 +94,6 @@ def _signal_box(s, is_in: bool):
         ("BOX",           (0,0), (-1,-1), 1.5 if is_in else 0.5, NAVY if is_in else BORDER),
         ("TOPPADDING",    (0,0), (-1,-1), 14),
         ("BOTTOMPADDING", (0,0), (-1,-1), 14),
-    ]))
-    return box
-
-
-def _exploration_box(s, prompts):
-    rows = [[Paragraph("What to explore next", s["prompt_head"])]]
-    for p in prompts:
-        rows.append([Paragraph(f"\u2192  {p}", s["prompt_item"])])
-    box = Table(rows, colWidths=[6.8*inch])
-    box.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,0),  AMBER_DARK),
-        ("BACKGROUND",    (0,1), (-1,-1), AMBER_BG),
-        ("BOX",           (0,0), (-1,-1), 0.5, ORANGE),
-        ("LINEBELOW",     (0,0), (-1,0),  0.5, ORANGE),
-        ("TOPPADDING",    (0,0), (-1,-1), 7),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 7),
-        ("LEFTPADDING",   (0,0), (-1,-1), 10),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 10),
     ]))
     return box
 
@@ -306,41 +285,6 @@ def generate_session_pdf(data: dict) -> str:
         "Limitation: this signal tells you what one rule says about one stock today. "
         "It does not tell you whether the rule is good or the signal will be correct.",
         s["limitation"]))
-
-    # ── What comes next ───────────────────────────────────────────────────────
-    story.append(Spacer(1, 10))
-    hook = Table(
-        [["What comes next"],
-         [Paragraph(
-             f"Unit 1.3 — Your First Backtest: take the {ticker} SMA-{ma_period} strategy "
-             f"to a professional platform and find out whether it would have made money "
-             f"with real transaction costs, institutional data, and a performance dashboard.",
-             s["hook_body"])]],
-        colWidths=[6.8*inch])
-    hook.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,0), BLUE),
-        ("TEXTCOLOR",     (0,0), (-1,0), WHITE),
-        ("FONTNAME",      (0,0), (-1,0), "Helvetica-Bold"),
-        ("FONTSIZE",      (0,0), (-1,-1), 9),
-        ("BACKGROUND",    (0,1), (-1,1), BLUE_LIGHT),
-        ("TOPPADDING",    (0,0), (-1,-1), 8),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 8),
-        ("LEFTPADDING",   (0,0), (-1,-1), 10),
-        ("BOX",           (0,0), (-1,-1), 0.5, BORDER),
-    ]))
-    story.append(KeepTogether([hook]))
-
-    # ── Exploration prompts ───────────────────────────────────────────────────
-    story.append(Spacer(1, 12))
-    prompts = [
-        f"Ask: 'What would need to happen for the {ticker} signal to flip? "
-        f"How far must the price move from today?'",
-        f"Ask: 'I ran the {ma_period}-day SMA on {ticker}. Which specific periods "
-        f"drove the most return — and which periods look like the wrong call?'",
-        f"Ask: 'Run the {ma_period}-day SMA on a different stock from {ticker} and compare "
-        f"the signal charts. Which looks more stable and why?'",
-    ]
-    story.append(KeepTogether([_exploration_box(s, prompts)]))
 
     # ── Footer ────────────────────────────────────────────────────────────────
     story.append(Spacer(1, 10))
