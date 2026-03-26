@@ -34,7 +34,7 @@ When Claude Code reads this file, do exactly this and nothing else:
    "QSLab F1 is ready.
 
    Available labs:
-     F1-1.2  Your Research Environment
+     F1-1.2  Your Research Lab
      F1-4.1  The Moving Average Signal
 
    To begin, say: Start QSLab F1-1.2"
@@ -55,7 +55,7 @@ When the student says "Initiate QSLab F1", do exactly the same as WHEN THIS FILE
    "QSLab F1 is ready.
 
    Available labs:
-     F1-1.2  Your Research Environment
+     F1-1.2  Your Research Lab
      F1-4.1  The Moving Average Signal
 
    To begin, say: Start QSLab F1-1.2"

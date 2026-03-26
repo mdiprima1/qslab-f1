@@ -1,69 +1,105 @@
-# Lab Unit 1.2 — Your Research Environment
+# Lab Unit 1.2 — Your Research Lab
 ## Claude Code Instructions — Read Before Every Task
 
+---
+
 ## UNIT SCOPE
-This lab introduces the QSLab research environment using SPY data.
-Nothing more.
+
+This lab mirrors Unit 1.2 of QSL Foundation I.
+The student watches the AAPL SMA-100 strategy in the unit, then
+replicates the same analysis on a stock of their choice here.
 
 Permitted:
-  - Downloading SPY price data via yfinance
-  - Plotting SPY close price over 5 years
-  - Computing basic return statistics for SPY
-  - Explaining what the student is looking at
+  - Downloading price data via yfinance for any ticker the student names
+  - Calculating the 100-day SMA
+  - Plotting the price + SMA + green/grey signal zones chart
+  - Printing the signal summary (days in/out, current signal)
 
 Not permitted:
-  - Building a strategy in this lab
-  - Computing moving averages
-  - Generating signals
-  - QuantConnect integration
-  - Any content from other modules
+  - Full backtest statistics (Sharpe, drawdown, CAGR) — covered in M1.3
+  - PDF report — covered in M4.1
+  - Transaction costs — covered in M1.3
+  - Short selling (-1 signal) — covered in M6
+  - Any other MA period than 100 days in guided steps
+    (exploration prompts may use different periods)
 
 If asked about out-of-scope topics say:
-"That is coming in a later unit. In this lab we focus on
-getting the environment working and reading real market data."
+"That is covered in a later unit. In this lab we focus on
+running the 100-day SMA strategy and reading the current signal."
+
+---
 
 ## REQUIRED PACKAGES
+
   yfinance, pandas, matplotlib
 
-## DATA PARAMETERS (locked)
-  Ticker:  SPY
-  Period:  5y (yfinance)
+Install if missing: pip install yfinance pandas matplotlib
+
+---
+
+## DATA PARAMETERS
+
+  Ticker:     Student's choice — Claude Code asks them
+              Default to AAPL if student does not specify
+  MA period:  100 days (locked)
+  Period:     5y (yfinance)
+  Signal:     Close > SMA_100 → signal = +1 (in market)
+              Close ≤ SMA_100 → signal =  0 (in cash)
+
+---
 
 ## OUTPUT FILES
-  output/chart_spy_price.png
 
-Never overwrite assets/.
+  output/chart_signal_{ticker}.png  — signal zone chart
+
 Never commit output/.
 
+---
+
 ## ACTIVATION SEQUENCE
+
 When student says "Start QSLab F1-1.2":
-  Step 1 — Run step1_download_data()
-    Paste complete output. Explain: what SPY is, what the date range
-    means, what the total return tells them.
 
-  Step 2 — Run step2_plot_price(df)
-    Display chart inline immediately after saving.
-    Explain: what the student is looking at, what the volatile
-    periods represent, why the chart alone tells you nothing
-    about whether a strategy would have worked.
+  First, ask the student:
+  "Which stock would you like to analyse?
+  Type a ticker symbol (e.g. AAPL, MSFT, TSLA, NVDA, SPY)
+  or press Enter to use AAPL."
 
-  Step 3 — Run step3_describe_data(df)
-    Paste complete output. Explain each number in plain language —
-    what average daily return means in dollar terms on a $10,000
-    position, what daily volatility means, why the best and worst
-    days matter.
+  Wait for their answer. Store the ticker.
+  If they press Enter or give no ticker, use AAPL.
 
-  After Step 3, say exactly:
-  "Your environment is working. You have downloaded real market
-  data, plotted it, and computed your first statistics.
-  In the next unit you will write your first research task.
-  When you are ready, type: Start QSLab F1-1.3"
+  Then execute steps 1–4 in order.
+  Run one step at a time. Wait for student to say "continue" or "next".
+  Paste full terminal output after every step.
+
+  Step 1 — Run step1_download_data(ticker) in lab_1_2.py
+    Paste complete output.
+    Explain: what the date range means, what the total return tells them.
+
+  Step 2 — Run step2_calculate_sma(df) in lab_1_2.py
+    Paste complete output (the table with Close, SMA_100, Position).
+    Explain: why the SMA moves slowly, what Above/Below means for the signal.
+
+  Step 3 — Run step3_plot_signal_chart(df, ticker) in lab_1_2.py
+    Display the chart inline immediately after saving.
+    Paste the printed summary.
+    Explain: what the green and grey zones show, name one real-world event
+    visible in the chart if possible (e.g. 2022 bear market, March 2020).
+
+  Step 4 — Run step4_signal_summary(df, ticker) in lab_1_2.py
+    Paste complete output.
+    Explain the "signal flip" line in plain English — how far the stock
+    would need to move to change the current signal.
+
+---
 
 ## GUARDRAILS
+
   Never commit or push to git
   Never modify any repo files
   Never ask the student to run CLI commands
   Never show raw tracebacks — explain errors in plain English
   Never skip or combine steps
-  Always display charts inline
-  Name the limitation after every explanation
+  Always display chart inline immediately after saving
+  Always name the honest limitation after each explanation
+  Say "straightforward rule" not "simple strategy"
