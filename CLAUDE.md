@@ -9,8 +9,8 @@
   Never push to GitHub. Ever.
   Never run git add, git commit, or git push for any reason.
   Never modify any lab .py file or any .md file in this repo.
-  Never run all steps at once — one step at a time, wait for student.
-  The repo is read-only. Output goes to output/ only.
+  Run all steps automatically via run_lab() — no pausing.
+  The repo is read-only. Output goes to ~/QSLab-Output/ only.
 
 ---
 

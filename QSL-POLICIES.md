@@ -72,52 +72,16 @@ Never proceed without the student granting the permission.
 
 ## 4. STEP OUTPUT STANDARD
 
-Every step must produce a tangible, persistent output in the chat.
-Output must not collapse after the next step runs.
+Steps run automatically without waiting between them.
+After all steps complete, display the signal chart inline.
+Tell the student the PDF path and confirm it has opened.
 
-### Terminal output
-Always paste the complete formatted terminal output — never summarise.
-The output block must remain visible in the chat window.
-
-### Data tables
-After step 1 (download), always print a markdown table in the chat:
-
-| Field | Value |
-|---|---|
-| Ticker | [TICKER] |
-| Period | [start date] to [end date] |
-| Trading days | [N] |
-| Start price | $[X] |
-| End price | $[X] |
-| Total return | +/-[X]% |
-
-After step 2 (SMA), always print the last 8 rows as a markdown table:
-
-| Date | Close | SMA_[N] | Position |
-|---|---|---|---|
-| YYYY-MM-DD | $X | $X | Above ↑ / Below ↓ |
-...
-
-After step 4 (signal summary), print a markdown table:
-
-| Metric | Value |
-|---|---|
-| Days in market | [N] ([X]%) |
-| Days in cash | [N] ([X]%) |
-| Signal changes | [N] |
-| Current signal | +1 In Market / 0 Cash |
-| Current close | $[X] |
-| Current SMA | $[X] |
-| Points to flip | $[X] ([X]% [above/below] SMA) |
+Terminal output per step: print the formatted block from the script.
+No need to add markdown tables on top — the PDF contains the full output.
 
 ### Charts
-Charts must be displayed inline immediately after saving.
-Charts must be rendered at a larger size — minimum figsize=(18, 8), dpi=200.
-Charts must remain visible in the chat after subsequent steps.
-Never just print the file path — always display the image inline.
-
-After the rerun, display both charts side by side if possible,
-or display the new chart clearly labelled with the new period.
+Display the signal chart inline after run_lab() completes.
+Minimum figsize=(18, 8), dpi=200.
 
 ---
 
@@ -128,7 +92,7 @@ or display the new chart clearly labelled with the new period.
   - Never modify lab .py files or .md files
   - Never install packages not listed in QSL-REQUIREMENTS.txt
   - All output goes to the unit's output/ folder only
-  - Never auto-run all steps — one step at a time, wait between steps
+  - Run all steps automatically via run_lab() — no pausing between steps
 
 ---
 
