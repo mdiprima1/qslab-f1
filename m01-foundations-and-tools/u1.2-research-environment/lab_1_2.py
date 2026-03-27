@@ -153,6 +153,21 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str, ma_period: int) -> dict:
     spread_pct     = round(spread / current_sma * 100, 1)
     signal_label   = "Signal +1 — Own the stock" if current_signal == 1 else "Signal 0 — Hold cash"
 
+    years = len(df) / 252
+    cum_strat = 1.0
+    position = 0
+    for i in range(len(df)):
+        sig = int(df["Signal"].iloc[i])
+        if i > 0:
+            daily_ret = float(df["Close"].iloc[i]) / float(df["Close"].iloc[i-1]) - 1
+            if position == 1:
+                cum_strat *= (1 + daily_ret)
+        position = sig
+    strat_cagr = round((cum_strat ** (1 / years) - 1) * 100, 2)
+
+    bah_factor = float(df["Close"].iloc[-1]) / float(df["Close"].iloc[0])
+    bah_cagr = round((bah_factor ** (1 / years) - 1) * 100, 2)
+
     print(f"  Days in market: {buy_days:,} ({pct_in}%)")
     print(f"  Days in cash:   {cash_days:,} ({round(100-pct_in,1)}%)")
     print(f"  Signal changes: {transitions}")
@@ -161,6 +176,8 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str, ma_period: int) -> dict:
         print(f"  Flip to 0 if price falls ${abs(spread):.2f} (below ${current_sma:.2f})")
     else:
         print(f"  Flip to +1 if price rises ${abs(spread):.2f} (above ${current_sma:.2f})")
+    print(f"  Strategy return: {strat_cagr:.1f}% per year")
+    print(f"  B&H return:      {bah_cagr:.1f}% per year")
 
     return {
         "ticker": ticker, "ma_period": ma_period,
@@ -168,6 +185,8 @@ def step4_signal_summary(df: pd.DataFrame, ticker: str, ma_period: int) -> dict:
         "pct_in_market": pct_in, "signal_changes": transitions,
         "current_signal": current_signal, "current_signal_label": signal_label,
         "current_close": current_close, "current_sma": current_sma, "spread": spread,
+        "strat_cagr": strat_cagr,
+        "bah_cagr": bah_cagr,
     }
 
 
@@ -212,6 +231,8 @@ def run_lab(ticker: str, ma_period: int):
         "chart_path": chart_path,
         "pct_in_market": pct_in,
         "signal_result": result,
+        "strat_cagr": result["strat_cagr"],
+        "bah_cagr": result["bah_cagr"],
     }
 
     pdf_path = generate_session_pdf(session_data)

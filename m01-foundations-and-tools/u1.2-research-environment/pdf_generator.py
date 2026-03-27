@@ -252,38 +252,41 @@ def generate_session_pdf(data: dict) -> str:
     story.append(HRFlowable(width="100%", thickness=0.5, color=BORDER,
         spaceBefore=12, spaceAfter=4))
 
-    # ── Step 4 — Signal Summary ───────────────────────────────────────────────
-    story.append(Paragraph("Step 4 — Signal Summary", s["step_head"]))
+    # ── Step 4 — Return Comparison ─────────────────────────────────────────────
+    story.append(Paragraph("Step 4 — Return Comparison", s["step_head"]))
 
-    spread     = result["spread"]
-    spread_abs = abs(spread)
-    spread_pct = round(spread_abs / result["current_sma"] * 100, 1)
-    direction  = "above" if spread > 0 else "below"
-    flip_dir   = "fall" if is_in else "rise"
-    flip_to    = "0 (cash)" if is_in else "+1 (in market)"
+    strat_cagr = data["strat_cagr"]
+    bah_cagr   = data["bah_cagr"]
 
-    sum_rows = [
-        ["Metric", "Value"],
-        ["Days in market (+1)", f"{result['days_in_market']:,} ({result['pct_in_market']}%)"],
-        ["Days in cash (0)",    f"{result['days_in_cash']:,} ({round(100-result['pct_in_market'],1)}%)"],
-        ["Signal changes",       str(result["signal_changes"])],
-        ["Today's close",        f"${result['current_close']:.2f}"],
-        [f"{ma_period}-day SMA", f"${result['current_sma']:.2f}"],
-        ["Spread",               f"${spread_abs:.2f} ({spread_pct:.1f}%) {direction} SMA"],
-        ["Flip distance",        f"Price must {flip_dir} ${spread_abs:.2f} to become {flip_to}"],
+    return_rows = [
+        ["", "Return per year"],
+        ["Strategy (SMA rule)", f"{strat_cagr:.1f}%"],
+        [f"Buy-and-hold ({ticker})", f"{bah_cagr:.1f}%"],
     ]
-    t3 = Table(sum_rows, colWidths=[2.8*inch, 3.9*inch])
-    t3.setStyle(_table_style())
-    story.append(KeepTogether([t3]))
+    rt = Table(return_rows, colWidths=[3.5*inch, 3.2*inch])
+    rt.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (-1,0), NAVY),
+        ("TEXTCOLOR",     (0,0), (-1,0), WHITE),
+        ("FONTNAME",      (0,0), (-1,0), "Helvetica-Bold"),
+        ("FONTSIZE",      (0,0), (-1,-1), 10),
+        ("FONTNAME",      (0,1), (-1,-1), "Helvetica"),
+        ("TOPPADDING",    (0,0), (-1,-1), 8),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 8),
+        ("LEFTPADDING",   (0,0), (-1,-1), 10),
+        ("BOX",           (0,0), (-1,-1), 0.5, BORDER),
+        ("LINEBELOW",     (0,0), (-1,0),  0.5, BORDER),
+        ("GRID",          (0,1), (-1,-1), 0.25, BORDER),
+    ]))
+    story.append(rt)
     story.append(Spacer(1, 6))
     story.append(Paragraph(
-        f"The flip distance tells you exactly how far {ticker} would need to move "
-        f"before the strategy changes its position. "
-        f"You have just completed the research loop: question, data, analysis, result.",
+        f"Both figures are annualised returns over the full 20-year period. "
+        f"The strategy owned {ticker} only when price was above the {ma_period}-day SMA — "
+        f"holding cash otherwise. Buy-and-hold owned it continuously.",
         s["body"]))
     story.append(Paragraph(
-        "Limitation: this signal tells you what one rule says about one stock today. "
-        "It does not tell you whether the rule is good or the signal will be correct.",
+        "Limitation: return alone does not tell you whether the strategy was worth using. "
+        "Risk, drawdown, and costs matter. We cover those in the modules ahead.",
         s["limitation"]))
 
     # ── Footer ────────────────────────────────────────────────────────────────
